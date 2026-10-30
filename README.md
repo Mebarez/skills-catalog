@@ -20,7 +20,9 @@ That copies `skill-finder/` to `~/.claude/skills/skill-finder` and builds the ca
 
 ## Use
 
-In Claude Code:
+In Claude Code, type `/skill-finder` on its own to open a **clickable menu**: pick a category, see its skills, and click one to run it. The menu has a search box too. It shows in apps that render inline widgets, such as the Claude desktop app; anywhere else you get a text list.
+
+Or ask with a goal:
 
 ```
 /skill-finder make a vertical promo video with captions
@@ -76,6 +78,7 @@ Then rebuild. Anything that matches nothing lands in **Other**, so check that se
 skill-finder/SKILL.md                  the /skill-finder skill
 skill-finder/scripts/build_catalog.py  scanner + categorizer
 skill-finder/scripts/find_skill.py     ranks skills for a goal
+skill-finder/scripts/menu.py           HTML for the clickable category menu
 install.py                             copies the skill to ~/.claude/skills and builds the catalog
 CATALOG.md, catalog.json               example catalog from the author's machine
 ```

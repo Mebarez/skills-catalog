@@ -8,7 +8,21 @@ description: Tells you exactly which installed skill or slash command to use for
 Picks the right skill from the ones already installed on this machine.
 The catalog lives next to this file: `catalog.json` (data) and `CATALOG.md` (readable, grouped by category).
 
-## Steps
+## Menu (no goal given)
+
+If the user typed `/skill-finder` with nothing after it, or asked to "show the menu / categories", show the clickable menu:
+
+1. Run `python ~/.claude/skills/skill-finder/scripts/menu.py` and pass its output **verbatim** as `widget_code` to the `show_widget` tool (title `skill_finder_menu`). Don't edit or retype it. If `show_widget` isn't available, print the category list from `find_skill.py --categories` instead.
+2. Say one short line under it ("Pick a category, or type what you want to do.") and stop.
+
+If the message is `/skill-finder category: <name>`:
+
+1. Run `python ~/.claude/skills/skill-finder/scripts/menu.py --category "<name>"` and pass its output verbatim to `show_widget` (title `skill_finder_<category>` in snake_case).
+2. One short line under it, then stop.
+
+Clicking a skill in the menu sends "Run the /name skill…". Then invoke that skill with the Skill tool.
+
+## Steps (goal given)
 
 1. **Search.** Run the finder with the user's goal in their own words:
    ```bash
