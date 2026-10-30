@@ -40,7 +40,7 @@ SCRIPT = """<script>
 document.querySelectorAll('[data-p]').forEach(b=>b.addEventListener('click',()=>sendPrompt(b.dataset.p)));
 document.querySelectorAll('[data-s]').forEach(b=>b.addEventListener('click',()=>sendPrompt('Run the '+b.dataset.s+' skill. Ask me what I need it for first if you need details.')));
 const q=document.getElementById('sf-q');
-if(q&&document.getElementById('sf-go')){const go=()=>{const v=q.value.trim();const e=document.getElementById('sf-err');if(!v){e.textContent='Type what you want to do first';return}e.textContent='';sendPrompt('/skill-finder '+v)};document.getElementById('sf-go').addEventListener('click',go);q.addEventListener('keydown',ev=>{if(ev.key==='Enter')go()});q.addEventListener('input',()=>{document.getElementById('sf-err').textContent=''})}
+if(q&&document.getElementById('sf-go')){const go=()=>{const v=q.value.trim();const e=document.getElementById('sf-err');if(!v){e.textContent='Type what you want to do first';return}e.textContent='';sendPrompt('skill-finder: find a skill to '+v)};document.getElementById('sf-go').addEventListener('click',go);q.addEventListener('keydown',ev=>{if(ev.key==='Enter')go()});q.addEventListener('input',()=>{document.getElementById('sf-err').textContent=''})}
 if(q&&!document.getElementById('sf-go')){q.addEventListener('input',()=>{const v=q.value.toLowerCase();document.querySelectorAll('.sf-r').forEach(r=>{r.style.display=r.textContent.toLowerCase().includes(v)?'':'none'})})}
 </script>"""
 
@@ -67,7 +67,7 @@ def root(data):
            '<div id="sf-err" style="font-size:13px;color:var(--text-danger);margin:-6px 0 8px"></div>',
            '<div class="sf-g">']
     for c, n in counts.items():
-        out.append(f'<button class="sf-c" data-p="{esc("/skill-finder category: " + c)}">'
+        out.append(f'<button class="sf-c" data-p="{esc("skill-finder: open category " + c)}">'
                    f'<i class="ti ti-{ICONS.get(c, "folder")}" aria-hidden="true"></i>{esc(c)}<span class="sf-n">{n}</span></button>')
     out.append("</div>")
     out.append(f'<p style="font-size:12px;color:var(--text-muted);margin:12px 0 0">Catalog built {data["meta"]["generated"]}</p>')
@@ -82,7 +82,7 @@ def category(data, name):
     cat = items[0]["category"]
     items = [e for e in items if e["category"] == cat]
     out = [STYLE, f'<h2 class="sr-only">{esc(cat)}: {len(items)} skills</h2>',
-           f'<div class="sf-bar"><button data-p="/skill-finder"><i class="ti ti-arrow-left" aria-hidden="true"></i> All categories ↗</button>'
+           f'<div class="sf-bar"><button data-p="skill-finder: open menu"><i class="ti ti-arrow-left" aria-hidden="true"></i> All categories ↗</button>'
            f'<span style="font-size:14px;font-weight:500">{esc(cat)}</span><span class="sf-n">{len(items)}</span></div>']
     if len(items) > 12:
         out.append('<input id="sf-q" placeholder="Filter this list" style="width:100%;margin:0 0 10px">')

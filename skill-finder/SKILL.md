@@ -1,6 +1,6 @@
 ---
 name: skill-finder
-description: Tells you exactly which installed skill or slash command to use for a goal, with the /name to type and where it lives. Use when the user asks "which skill should I use for X", "is there a skill for X", "what's the right command for X", "list my SEO/video/sales skills", "show my skill categories", "refresh the skill catalog", or types /skill-finder. Covers every installed source (user skills, plugins, desktop-app plugins, built-ins). Not for finding new skills to install from the internet (that is /find-skills).
+description: Tells you exactly which installed skill or slash command to use for a goal, with the /name to type and where it lives. Use when the user asks "which skill should I use for X", "is there a skill for X", "what's the right command for X", "list my SEO/video/sales skills", "show my skill categories", "refresh the skill catalog", types /skill-finder, or sends a message starting "skill-finder:" (clicks from its menu). Covers every installed source (user skills, plugins, desktop-app plugins, built-ins). Not for finding new skills to install from the internet (that is /find-skills).
 ---
 
 # Skill finder
@@ -10,15 +10,20 @@ The catalog lives next to this file: `catalog.json` (data) and `CATALOG.md` (rea
 
 ## Menu (no goal given)
 
-If the user typed `/skill-finder` with nothing after it, or asked to "show the menu / categories", show the clickable menu:
+If the user typed `/skill-finder` with nothing after it, or the message is `skill-finder: open menu`, or they asked to "show the menu / categories", show the clickable menu:
 
-1. Run `python ~/.claude/skills/skill-finder/scripts/menu.py` and pass its output **verbatim** as `widget_code` to the `show_widget` tool (title `skill_finder_menu`). Don't edit or retype it. If `show_widget` isn't available, print the category list from `find_skill.py --categories` instead.
-2. Say one short line under it ("Pick a category, or type what you want to do.") and stop.
+1. Run `python "$HOME/.claude/skills/skill-finder/scripts/menu.py"`. Use this exact command in Bash or PowerShell (a bare `~` path fails in PowerShell).
+2. Pass its whole output **unchanged** as `widget_code` to the inline-widget tool (`show_widget`, title `skill_finder_menu`).
+   - If that tool is only listed as deferred, load it first with ToolSearch (query `show_widget`). If it says to call its `read_me` first, do that silently.
+   - If no widget tool exists in this app, print the output of `find_skill.py --categories` as a short list instead.
+3. Say one short line under it ("Pick a category, or type what you want to do.") and stop.
 
-If the message is `/skill-finder category: <name>`:
+If the message is `skill-finder: open category <name>` (or `/skill-finder category: <name>`):
 
-1. Run `python ~/.claude/skills/skill-finder/scripts/menu.py --category "<name>"` and pass its output verbatim to `show_widget` (title `skill_finder_<category>` in snake_case).
-2. One short line under it, then stop.
+1. Run `python "$HOME/.claude/skills/skill-finder/scripts/menu.py" --category "<name>"`.
+2. Pass the output unchanged to the widget tool (title `skill_finder_category`). One short line under it, then stop.
+
+If the message is `skill-finder: find a skill to <goal>`, follow **Steps (goal given)** below with that goal.
 
 Clicking a skill in the menu sends "Run the /name skill…". Then invoke that skill with the Skill tool.
 
@@ -26,7 +31,7 @@ Clicking a skill in the menu sends "Run the /name skill…". Then invoke that sk
 
 1. **Search.** Run the finder with the user's goal in their own words:
    ```bash
-   python ~/.claude/skills/skill-finder/scripts/find_skill.py "<goal>"
+   python "$HOME/.claude/skills/skill-finder/scripts/find_skill.py" "<goal>"
    ```
    - Category list: `--categories`. Everything in one category: `--category "SEO"`.
    - More results: `--top 15`.
@@ -45,7 +50,7 @@ Clicking a skill in the menu sends "Run the /name skill…". Then invoke that sk
 
 When skills were added or removed, or the catalog date (printed on the first line) is old:
 ```bash
-python ~/.claude/skills/skill-finder/scripts/build_catalog.py
+python "$HOME/.claude/skills/skill-finder/scripts/build_catalog.py"
 ```
 It rescans every source and rewrites `catalog.json` and `CATALOG.md` in this folder. Add `--project <folder>` to include that project's `.claude/skills` (the current folder is included by default).
 
